@@ -3,7 +3,6 @@
 > Your all-in-one desktop companion for The Elder Scrolls Online — open source, cross-platform, and designed to be as simple as possible.
 
 ![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux-blue)
-![License](https://img.shields.io/badge/license-MIT-green)
 ![Tauri](https://img.shields.io/badge/Tauri-v2-blue)
 ![Svelte](https://img.shields.io/badge/Svelte-5-orange)
 ![Status](https://img.shields.io/badge/status-v0.9.8--dev-yellow)
@@ -222,12 +221,11 @@ A full-featured launcher with multiple tabs:
 | Autostart | `tauri-plugin-autostart` |
 | In-app updates | `tauri-plugin-updater` |
 | Addon data | ESOUI public API (`api.mmoui.com`) |
-| Achievement data | UESP wiki scraping + custom addon |
+| Achievement data | UESP wiki + custom addon |
 | ESO icons | `esoicons.uesp.net` with local cache |
-| News | `elderscrollsonline.com` scraping |
-| ESO-Hub news | `eso-hub.com` scraping with disk cache |
+| News | `elderscrollsonline.com`|
+| ESO-Hub news | `eso-hub.com`|
 | Screenshots (cloud) | Steam Web API |
-| Builds | Community-contributed static JSON in repository |
 
 Tauri was chosen over Electron because it produces native binaries for all three platforms at a fraction of the size (~10MB vs ~150MB), with full local filesystem access.
 
@@ -287,8 +285,8 @@ esoll/
 │   │       ├── builds.rs         # CP writing to SavedVariables
 │   │       ├── launcher.rs       # Launch, status, verify, repair
 │   │       ├── media.rs          # Screenshot scan, metadata, Steam cloud
-│   │       ├── news.rs           # Scraping + cache
-│   │   │   ├── eso_hub.rs        # ESO-Hub feed scraping + cache
+│   │       ├── news.rs           
+│   │   │   ├── eso_hub.rs        # ESO-Hub feed
 │   │   │   ├── reshade.rs        # Installation, presets, shaders, config
 │   │   │   ├── system.rs         # Metrics (CPU/RAM/GPU), addon status, ReShade toggle, write_text_file
 │   │       └── updater.rs        # tauri-plugin-updater wrapper
