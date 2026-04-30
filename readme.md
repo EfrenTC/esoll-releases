@@ -1,6 +1,6 @@
 # 🎮 ESOLL
 
-> Your all-in-one desktop companion for The Elder Scrolls Online — open source, cross-platform, and designed to be as simple as possible.
+> Your all-in-one desktop companion for The Elder Scrolls Online — cross-platform, and designed to be as simple as possible.
 
 ![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux-blue)
 ![Tauri](https://img.shields.io/badge/Tauri-v2-blue)
