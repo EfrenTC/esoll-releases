@@ -6,13 +6,13 @@
 ![License](https://img.shields.io/badge/license-MIT-green)
 ![Tauri](https://img.shields.io/badge/Tauri-v2-blue)
 ![Svelte](https://img.shields.io/badge/Svelte-5-orange)
-![Status](https://img.shields.io/badge/status-v0.7.0-yellow)
+![Status](https://img.shields.io/badge/status-v0.9.8--dev-yellow)
 
 ---
 
 ## What is ESOLL?
 
-ESOLL is a native desktop application that brings together all the tools an ESO player needs into a single modern interface. Manage your addons, track achievements, manage screenshots, monitor system performance, install ReShade, read official news, launch the game and back up your configuration — all without needing an account, without touching game memory, and with zero risk of violating the Terms of Service.
+ESOLL is a native desktop application that brings together all the tools an ESO player needs into a single modern interface. Manage your addons, track achievements, manage screenshots, monitor system performance, install ReShade, read official news **and community news from ESO-Hub**, launch the game and back up your configuration — all without needing an account, without touching game memory, and with zero risk of violating the Terms of Service.
 
 The app works by reading and writing local game files and consuming public APIs (ESOUI, UESP, elderscrollsonline.com). It includes full **internationalization** support in **Spanish** (default) and **English**, with ~828 translation keys per language.
 
@@ -28,6 +28,10 @@ A modern replacement for Minion. Connects to the public ESOUI API to search, ins
 - Sorting by downloads, name, date, author
 - Pagination and real-time search
 - Automatic update detection and "Update All" button (with auto-backup before updating)
+- **Auto-update toggle** for hands-off addon maintenance
+- **Age filter**: hide addons not updated in the last 1, 2, 3 or 4 years
+- **Addon variant persistence**: when an addon ships multiple downloadable variants, ESOLL remembers the chosen one across reinstalls and updates
+- **Uninstall all** with in-app confirmation modal
 - Library visibility toggle
 - Ignore list to exclude addons from updates
 - Custom addons path support
@@ -38,8 +42,9 @@ A modern replacement for Minion. Connects to the public ESOUI API to search, ins
 - Named addon collections with color coding (blue, green, purple, amber, red) and descriptions
 - Take snapshots of currently installed addons into a collection
 - Apply a collection (installs/uninstalls addons to match the saved set)
-- Import and export collections as JSON
+- Import collections from JSON; **export to JSON via native save dialog** (Tauri `write_text_file` command)
 - Duplicate and edit existing collections
+- **Collapsible info banners** explaining how collections work
 
 **Backups tab:**
 - Named snapshots of the entire `SavedVariables` folder
@@ -47,6 +52,7 @@ A modern replacement for Minion. Connects to the public ESOUI API to search, ins
 - Diff view to compare two snapshots (which addons changed)
 - Restore with a single click, export to a chosen directory
 - Automatic backup before bulk addon updates
+- **Collapsible info banner** with quick-start guidance
 
 **Settings tab:**
 - Custom addons path override with folder picker and auto-detect
@@ -63,7 +69,7 @@ A complete tracking system for ESO's 3000+ achievements:
 
 - **Rich import**: ESOLL includes its own addon (`ESOLLAchievements` v1.2.0, API 101044-101048) that exports rich data per achievement: name, description, points, completed criteria, category, subcategory and icon. Can be installed/uninstalled from the Settings tab
 - **Legacy import**: Compatible with `AccountAchievements.lua` as fallback (IDs only)
-- **UESP Catalog**: Scrapes the UESP wiki to obtain title, description, category, icon and URL per achievement — with batch processing of 15 articles at a time. Catalog updates run asynchronously (non-blocking) with a progress bar in the Settings tab
+- **UESP Catalog**: Scrapes the UESP wiki to obtain title, description, category, icon and URL per achievement — with batch processing of 15 articles at a time. Catalog updates run asynchronously (non-blocking) with **real-time progress events** and a progress bar in the Settings tab
 - **Enrichment by ID**: Individual lookup of up to 200 achievements with rate-limiting
 - **UESP Guide links**: Resolves and caches guide URLs per achievement with in-app HTML rendering (sanitized via `ammonia`)
 - **ESO Icons**: Downloads textures from `esoicons.uesp.net` with local cache at `~/.cache/esoll/eso-icons/`
@@ -79,12 +85,12 @@ A full screenshot manager for ESO:
 
 - **Automatic detection**: Finds the ESO screenshots folder on each platform; custom path override supported
 - **Steam Cloud sync**: Fetches screenshots from the Steam Web API (requires Steam API key + SteamID64) alongside local files
-- **Tags**: Per-screenshot tagging with 8 categories — Combat, Nature, Roleplay, Housing, Group, PvP, Outfits, Other
+- **Tags**: Per-screenshot tagging with 8 categories — Combat, Nature, Roleplay, Housing, Group, PvP, Outfits, Other. Tag badges use a **news-style design**: dark translucent background + colored dot identifier for legibility over any image
 - **Metadata**: Character name, zone, display name, notes, favorites per screenshot
 - **Albums**: Named groupings; photos can belong to multiple albums; album tiles show cover image
 - **Filters**: By tag, character, zone, album, favorites or free-text search
 - **Views**: Grid (masonry) and list view; sortable by date, name or size
-- **Compare view**: Side-by-side A/B comparison of two screenshots
+- **Compare view**: Side-by-side A/B comparison of two screenshots, with improved drag handle and overlay UI
 - **Lightbox**: Full-screen viewer with navigation
 - **Exports**: Copy selected screenshots to a chosen directory
 - **Settings**: Custom screenshots path, Steam API credentials
@@ -132,9 +138,16 @@ Official Elder Scrolls Online news aggregator:
 - Up to 50 news items: tier-1 editorial + tier-2 listing + up to 4 AJAX pages
 - 6-hour cache at `~/.local/share/esoll/esoll-news-cache.json`
 - Text search and category filtering
-- Responsive 3-column card grid
-- Full article modal with rendered HTML body and image galleries
+- Responsive 4-column card grid with taller cards for richer previews
+- **Articles open in the external browser** (lightweight, removes the in-app modal)
 - Force refresh button and last update timestamp
+
+### 🌐 ESO-Hub News
+Dedicated community news feed from `eso-hub.com`:
+- Independent feed and route (`/eso-hub`) with its own RSS-style nav icon
+- Disk-cached payload to avoid repeated network calls
+- Same 4-column responsive card grid and external-browser article opening as the official news reader
+- Toggleable from **Settings → Modules** like any other feature module
 
 ### 🚀 Game Launcher
 A full-featured launcher with multiple tabs:
@@ -142,6 +155,7 @@ A full-featured launcher with multiple tabs:
 **Launch:**
 - Automatic executable detection (Live, PTS, Launcher) on all platforms
 - Launch via Steam protocol on Linux, `open -a` on macOS, direct exe on Windows
+- **Environment pre-configuration**: Steam and official-launcher environments are now set up before spawning the game (locale, working directory, env vars), making the launch flow more reliable across platforms
 - **Auto-play**: Automatic game start bypassing the login screen using xdotool (Linux), PowerShell (Windows) or AppleScript (macOS)
 - **Auto-close launcher**: Closes the official Bethesda/Zenimax launcher after startup to free memory
 - Active session timer
@@ -175,10 +189,10 @@ A full-featured launcher with multiple tabs:
 
 ### ⚙️ General Settings
 - **Language**: Spanish / English with instant switching
-- **Theme**: Light / Dark
+- **Theme**: Light / Dark — the light theme has been refactored into a **"Moonlit Codex"** muted dusk-lavender palette with a deep violet-ink type tone (no aggressive bright white)
 - **Font size**: Small / Medium / Large
 - **Font family**: Inter (default), Cinzel (Gold Road), IM Fell English SC (Necrom)
-- **Modules**: Toggle individual app features on/off; minimum one module must remain active
+- **Modules**: Toggle individual app features on/off; minimum one module must remain active. Each module shows its own icon (including the new ESO-Hub RSS icon)
 - **Autostart**: Auto-start with the operating system (via `tauri-plugin-autostart`)
 - **Updates**: In-app update check with download progress and install (via `tauri-plugin-updater`)
 - Full localStorage persistence
@@ -211,6 +225,7 @@ A full-featured launcher with multiple tabs:
 | Achievement data | UESP wiki scraping + custom addon |
 | ESO icons | `esoicons.uesp.net` with local cache |
 | News | `elderscrollsonline.com` scraping |
+| ESO-Hub news | `eso-hub.com` scraping with disk cache |
 | Screenshots (cloud) | Steam Web API |
 | Builds | Community-contributed static JSON in repository |
 
@@ -233,6 +248,7 @@ esoll/
 │   │   │   ├── addon-backups/
 │   │   │   ├── addons/
 │   │   │   ├── build-planner/    # disabled, files preserved
+│   │   │   ├── eso-hub/         # ESO-Hub community news feed
 │   │   │   ├── launcher/
 │   │   │   ├── media/            # screenshot gallery
 │   │   │   ├── news/
@@ -252,6 +268,7 @@ esoll/
 │       ├── addon-backups/        # Standalone backups route
 │       ├── addons/               # Addon manager (Addons / Collections / Backups / Settings)
 │       ├── build-planner/        # Disabled
+│       ├── eso-hub/              # ESO-Hub news route
 │       ├── launcher/
 │       ├── media/                # Screenshot gallery
 │       ├── news/
@@ -271,8 +288,9 @@ esoll/
 │   │       ├── launcher.rs       # Launch, status, verify, repair
 │   │       ├── media.rs          # Screenshot scan, metadata, Steam cloud
 │   │       ├── news.rs           # Scraping + cache
-│   │       ├── reshade.rs        # Installation, presets, shaders, config
-│   │       ├── system.rs         # Metrics (CPU/RAM/GPU), addon status, ReShade toggle
+│   │   │   ├── eso_hub.rs        # ESO-Hub feed scraping + cache
+│   │   │   ├── reshade.rs        # Installation, presets, shaders, config
+│   │   │   ├── system.rs         # Metrics (CPU/RAM/GPU), addon status, ReShade toggle, write_text_file
 │   │       └── updater.rs        # tauri-plugin-updater wrapper
 │   ├── capabilities/default.json
 │   └── tauri.conf.json           # Frameless window
@@ -322,40 +340,6 @@ Each feature module follows a consistent pattern: `types/` → `services/` → `
 ## ToS Compliance
 
 ESOLL only reads and writes local game files — the same thing ESO addons do. It never modifies game memory, intercepts network traffic, or touches server-side data. All functionality is within the boundaries explicitly permitted by ZeniMax's Terms of Service.
-
----
-
-## Getting Started (Development)
-
-```bash
-# Prerequisites: Rust, Node.js
-
-# Install Tauri CLI
-cargo install tauri-cli
-
-# Clone and install dependencies
-git clone https://github.com/your-username/esoll
-cd esoll
-npm install
-
-# Run as native desktop app (recommended)
-npm run tauri dev
-
-# Optional: web-only UI preview (without native APIs)
-npm run dev
-```
-
-> For desktop features (filesystem access, native commands, local ESO detection), always test with `npm run tauri dev`.
-
-> **Linux (VS Code Snap) note:** The `scripts/tauri-native.mjs` script automatically restores environment variables sanitized by the Snap sandbox, fixing library resolution issues during development.
-
----
-
-## Contributing
-
-Contributions are welcome in any form — bug reports, feature suggestions, new builds for the community gallery, or code. You can contribute community builds by directly editing `static/builds/community-builds.json` and opening a pull request.
-
-This project is licensed under the **MIT License**.
 
 ---
 
